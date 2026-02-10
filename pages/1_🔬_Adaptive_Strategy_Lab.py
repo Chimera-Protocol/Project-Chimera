@@ -229,7 +229,7 @@ image_path = os.path.join(PROJECT_ROOT, "assets", "lab_banner.png")
 if os.path.exists(image_path):
     col1, col2, col3 = st.columns([2, 1, 2])
     with col2:
-        st.image(image_path, use_container_width=True)
+        st.image(image_path, width='stretch')
 
 st.title("Project Chimera: The Adaptive Strategy Lab")
 
@@ -277,7 +277,7 @@ with col_control_2:
     st.header("Simulation Control")
 
     st.write("") 
-    if st.button("Reset Simulation", key="reset_simulation_lab", use_container_width=True):
+    if st.button("Reset Simulation", key="reset_simulation_lab", width='stretch'):
         st.session_state.simulator = EcommerceSimulatorV5(seed=123)
         st.session_state.history = [st.session_state.simulator.get_state()]
         st.session_state.experience_history = []
@@ -368,7 +368,7 @@ with tab1:
     st.header(f"Define Your Strategic Goal for Week {state['week']}")
     user_goal = st.text_area("Describe your objective:", "Our primary objective is to achieve an exceptional brand trust score above 0.95, but in a more capital-efficient way. Instead of relying solely on deep, continuous price cuts, your main strategy should be to use high and sustained advertising to build trust. Use moderate discounts as a supporting tool, not the only tool. The goal is to reach >0.95 trust while keeping the business as profitable as possible.", height=100)
 
-    if st.button("Develop Strategy", use_container_width=True):
+    if st.button("Develop Strategy", width='stretch'):
         if user_goal and st.session_state.get("OPENAI_API_KEY"):
             st.session_state.last_decision_info = None 
             
@@ -424,7 +424,7 @@ with tab1:
                     st.metric("Brand Trust Value Add-on", f"${trust_add_on:,.2f}", f"{trust_val:+.3f} Trust Points")
                     st.divider(); st.metric("= Final Long-Term Value Score", f"${final_score:,.2f}")
         
-        if st.button("Apply Decision & Advance to Next Week", use_container_width=True, type="primary"):
+        if st.button("Apply Decision & Advance to Next Week", width='stretch', type="primary"):
             result = apply_decision_and_prepare_experience(proposal_info)
             st.session_state.history.append(result["after"])
             st.session_state.experience_history.append(result["experience"])
@@ -496,9 +496,17 @@ with tab3:
                 "Final Ad Spend": st.column_config.NumberColumn(format="$%.0f"),
                 "Final Brand Trust": st.column_config.ProgressColumn(min_value=0.0, max_value=1.0),
             },
-            use_container_width=True
+            width='stretch'
         )
 
+        csv_data = log_df.to_csv().encode("utf-8") 
+        
+        st.download_button(
+            label="Download History as CSV",
+            data=csv_data,
+            file_name="chimera_lab_history.csv",
+            mime="text/csv",
+        )
 
 # --- TAB 4: WHAT-IF ANALYSIS ---
 with tab4:
