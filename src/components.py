@@ -21,15 +21,10 @@ from .config import FEATURE_COLS_DEFAULT
 
 import warnings
 
-# --- ARCHITECTURE NOTICE: v1.6.0 Migration ---
-# The logic within this module (SymbolicGuardian) is being transitioned
-# from hardcoded Python checks to the CSL (Chimera Specification Language) Runtime.
+from .csl_guardian import CSLGuardianEcom, CSLGuardianUnified
+SymbolicGuardianV4 = CSLGuardianEcom
+SymbolicGuardianV6 = CSLGuardianUnified
 
-warnings.warn(
-    "Legacy Symbolic Logic detected. Using Python-based fallbacks instead of CSL verification.",
-    DeprecationWarning,
-    stacklevel=2
-)
 # -------------------------------------------
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -47,10 +42,8 @@ class Action:
     ad_spend: float = 0.0
 
 
-# ----------------------------
-# SymbolicGuardianV4
-# ----------------------------
-class SymbolicGuardianV4:
+# --- Legacy (kept for reference, no longer active) ---
+class _LegacySymbolicGuardianV4:
 
     def __init__(
         self,
@@ -894,11 +887,8 @@ class MarketSimulatorV2(BaseEnvironment):
 
 
 
-# ----------------------------
-# SymbolicGuardianV6
-# ----------------------------
-
-class SymbolicGuardianV6:
+# Legacy, no longer active!
+class _LegacySymbolicGuardianV6:
     """
     A unified, non-negotiable safety net for multiple domains, with support
     for validating short-selling actions in the quantitative trading domain.
