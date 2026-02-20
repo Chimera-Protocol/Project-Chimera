@@ -38,19 +38,18 @@ def main():
 
     st.markdown("<h1 style='text-align: center;'>Welcome to Project Chimera</h1>", unsafe_allow_html=True)
     
-    # 1. SENİN İSTEDİĞİN GÜÇLÜ SLOGAN (H3)
     st.markdown("<h3 style='text-align: center; font-weight: normal;'>An Ecosystem for Trustworthy & Strategic AI Agents</h3>", unsafe_allow_html=True)
     
-    # 2. VERSİYON BİLGİSİ (Daha zarif, gri tonlu, sloganın altında)
-    st.markdown("<p style='text-align: center; color: #666; margin-top: -15px;'>v1.6 Stable Release • Neuro-Symbolic Architecture</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #666; margin-top: -15px;'>v1.7.0 — The Great Unification • Powered by CSL-Core</p>", unsafe_allow_html=True)
     
-    # 3. BİRLEŞTİRİLMİŞ BİLGİ KUTUSU (Hem Hoşgeldin hem CSL Uyarısı)
-    st.info(
-        "**Welcome!** This is the central hub for Project Chimera's interactive applications. "
-        "Please select an experience below.\n\n"
-        "ℹ️ **System Status:** You are currently running the **Stable Legacy Engine (v1.5)**. "
-        "Migration to the new **CSL (Chimera Specification Language)** architecture is in progress."
-    )
+    st.success(
+    "**Welcome!** This is the central hub for Project Chimera's interactive applications. "
+    "Please select an experience below.\n\n"
+    "🛡️ **System Status:** All agent policies are powered by "
+    "[CSL-Core](https://github.com/chimera-protocol/csl-core); "
+    "formally verified with Z3 before any action is evaluated. "
+    "No rule can contradict another. No unsafe action can slip through."
+)
 
     st.divider()
     col1, col2, col3 = st.columns(3)
