@@ -1,0 +1,43 @@
+CONFIG {
+  ENFORCEMENT_MODE: BLOCK
+  CHECK_LOGICAL_CONSISTENCY: TRUE
+}
+
+DOMAIN QuantGuard {
+  VARIABLES {
+    action_type: {"BUY", "SELL", "SHORT", "HOLD"}
+    amount_pct: 0..100
+    max_amount_pct: 0..100
+    has_long_position: {"YES", "NO"}
+    shorting_allowed: {"YES", "NO"}
+    portfolio_valid: {"YES", "NO"}
+    price_valid: {"YES", "NO"}
+  }
+
+  // --- Portfolio Health ---
+  STATE_CONSTRAINT valid_portfolio {
+    WHEN action_type != "HOLD"
+    THEN portfolio_valid == "YES"
+  }
+
+  STATE_CONSTRAINT valid_price {
+    WHEN action_type != "HOLD"
+    THEN price_valid == "YES"
+  }
+
+  // --- Action-Specific Rules ---
+  STATE_CONSTRAINT sell_requires_long {
+    WHEN action_type == "SELL"
+    THEN has_long_position == "YES"
+  }
+
+  STATE_CONSTRAINT short_must_be_allowed {
+    WHEN action_type == "SHORT"
+    THEN shorting_allowed == "YES"
+  }
+
+  STATE_CONSTRAINT amount_within_limit {
+    WHEN action_type != "HOLD"
+    THEN amount_pct <= max_amount_pct
+  }
+}

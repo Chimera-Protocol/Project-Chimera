@@ -1,0 +1,60 @@
+CONFIG {
+  ENFORCEMENT_MODE: BLOCK
+  CHECK_LOGICAL_CONSISTENCY: TRUE
+}
+
+DOMAIN EcommerceGuard {
+  VARIABLES {
+    ad_spend: 0..50000
+    prev_ad_spend: 0..50000
+    ad_increase: 0..50000
+    price_change_offset: 0..200
+    future_price_cents: 0..100000
+    unit_cost_cents: 0..100000
+    min_safe_price_cents: 0..100000
+  }
+
+  // --- Ad Spend Rules ---
+  STATE_CONSTRAINT no_negative_ad {
+    ALWAYS True
+    THEN ad_spend >= 0
+  }
+
+  STATE_CONSTRAINT ad_absolute_cap {
+    ALWAYS True
+    THEN ad_spend <= 5000
+  }
+
+  STATE_CONSTRAINT ad_weekly_increase_cap {
+    ALWAYS True
+    THEN ad_increase <= 1000
+  }
+
+  // --- Price Change Rules ---
+  // price_change_offset = actual_pct + 100 (so 60 means -40%, 100 means 0%, 150 means +50%)
+  STATE_CONSTRAINT max_discount {
+    WHEN price_change_offset < 100
+    THEN price_change_offset >= 60
+  }
+
+  STATE_CONSTRAINT max_price_increase {
+    WHEN price_change_offset > 100
+    THEN price_change_offset <= 150
+  }
+
+  // --- Derived Price Rules ---
+  STATE_CONSTRAINT price_ceiling {
+    ALWAYS True
+    THEN future_price_cents <= 15000
+  }
+
+  STATE_CONSTRAINT above_cost {
+    ALWAYS True
+    THEN future_price_cents >= unit_cost_cents
+  }
+
+  STATE_CONSTRAINT min_margin_threshold {
+    ALWAYS True
+    THEN future_price_cents >= min_safe_price_cents
+  }
+}
