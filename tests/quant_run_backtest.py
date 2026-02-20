@@ -30,8 +30,9 @@ from src.config import FEATURE_COLS_DEFAULT
 
 # LangChain Imports
 from langchain_openai import ChatOpenAI
-from langchain.agents import AgentExecutor, create_openai_tools_agent, tool
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
+from langchain_core.tools import tool
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 # =============================================================================
 # --- Section 3: Configuration & Initialization ---
@@ -354,7 +355,7 @@ if __name__ == '__main__':
     tools = [check_action_validity, estimate_profit_impact]
     prompt = ChatPromptTemplate.from_messages([("system", SYSTEM_PROMPT), ("human", "Current State:\n{state_json}"), MessagesPlaceholder(variable_name="agent_scratchpad")])
     llm = ChatOpenAI(model=AGENT_MODEL, temperature=0.1)
-    agent = create_openai_tools_agent(llm, tools, prompt)
+    agent = create_tool_calling_agent(llm, tools, prompt)
     executor = AgentExecutor(agent=agent, tools=tools, verbose=False, handle_parsing_errors="raise")
     
     print(f"\n--- Starting {SIMULATION_DAYS}-Day Backtest ---")

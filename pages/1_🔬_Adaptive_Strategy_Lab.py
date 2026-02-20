@@ -7,15 +7,17 @@ from typing import Dict, Any, Optional
 import pandas as pd
 import streamlit as st
 from langchain_openai import ChatOpenAI
-from langchain.agents import AgentExecutor, create_openai_tools_agent
+from langchain_classic.agents import AgentExecutor
+from langchain_classic.agents import create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain.agents import tool
+from langchain_core.tools import tool
 from langchain_community.callbacks import StreamlitCallbackHandler
 import os
 import matplotlib.pyplot as plt
 import traceback
 import shap
 import numpy as np
+
 
 
 from src.ui import hide_default_sidebar_nav
@@ -124,10 +126,14 @@ def setup_agent_and_tools(agent_type: str):
 
     @tool
     def check_business_rules(price_change: float = 0.0, ad_spend: float = 0.0) -> str:
-        """Checks if a proposed action violates business rules."""
+        """Checks if a proposed action violates business rules. If invalid, returns a suggested fix."""
         action = {"price_change": price_change, "ad_spend": ad_spend}
-        current_state = st.session_state.simulator.get_state() # MODIFIED: Use get_state()
+        current_state = st.session_state.simulator.get_state()
         result = guardian.validate_action(action, current_state)
+        if not result["is_valid"]:
+            repaired, repair_report = guardian.repair_action(action, current_state)
+            result["suggested_fix"] = repaired
+            result["fix_valid"] = repair_report["is_valid"]
         return json.dumps(result)
 
     @tool
@@ -206,7 +212,7 @@ def setup_agent_and_tools(agent_type: str):
         st.error("Please enter your OpenAI API key in the sidebar before starting the lab.")
         st.stop()
     llm = ChatOpenAI(model="gpt-4o", temperature=0, openai_api_key=openai_api_key)
-    agent = create_openai_tools_agent(llm, tools, prompt)
+    agent = create_tool_calling_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     return agent_executor
 

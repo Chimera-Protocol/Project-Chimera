@@ -12,8 +12,10 @@ import matplotlib.pyplot as plt
 
 # --- Simulation components ---
 from langchain_openai import ChatOpenAI
-from langchain.agents import AgentExecutor, create_openai_tools_agent, tool
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_classic.agents import AgentExecutor
+from langchain_classic.agents import create_tool_calling_agent
+from langchain_core.tools import tool
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from src.ui import hide_default_sidebar_nav
 from src.sidebar import render_sidebar
@@ -131,7 +133,7 @@ Example: {{"action": {{"price_change": 0.05, "ad_spend": 1000.0}}, "rationale": 
         st.stop()
 
     llm = ChatOpenAI(model="gpt-4o", temperature=0.7, openai_api_key=openai_api_key)
-    agent = create_openai_tools_agent(llm, tools, prompt)
+    agent = create_tool_calling_agent(llm, tools, prompt)
     return AgentExecutor(agent=agent, tools=tools, verbose=False, handle_parsing_errors=True)
 
 # --- UI helpers ---

@@ -29,9 +29,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from langchain_openai import ChatOpenAI
-from langchain.agents import AgentExecutor, create_openai_tools_agent
+from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain.agents import tool
+from langchain_core.tools import tool
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -151,7 +151,7 @@ def create_competitive_agent_executor(
     ])
 
     llm = ChatOpenAI(model="gpt-4o", temperature=0.7, openai_api_key=openai_api_key)
-    agent = create_openai_tools_agent(llm, tools, prompt)
+    agent = create_tool_calling_agent(llm, tools, prompt)
     return AgentExecutor(agent=agent, tools=tools, verbose=False, handle_parsing_errors=True)
 
 

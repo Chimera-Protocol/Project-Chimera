@@ -31,8 +31,9 @@ from src.config import FEATURE_COLS_DEFAULT
 
 # --- LangChain Imports ---
 from langchain_openai import ChatOpenAI
-from langchain.agents import AgentExecutor, create_openai_tools_agent, tool
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
+from langchain_core.tools import tool
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 # =============================================================================
 # CONFIGURATION
@@ -550,7 +551,7 @@ def run_agent_once():
         ])
         
         llm = ChatOpenAI(model="gpt-4o", temperature=0.1)
-        agent = create_openai_tools_agent(llm, tools, prompt)
+        agent = create_tool_calling_agent(llm, tools, prompt)
         executor = AgentExecutor(
             agent=agent,
             tools=tools,

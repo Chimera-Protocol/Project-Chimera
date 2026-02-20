@@ -23,8 +23,9 @@ from src.config import FEATURE_COLS_DEFAULT
 
 # LangChain imports
 from langchain_openai import ChatOpenAI
-from langchain.agents import AgentExecutor, create_openai_tools_agent, tool
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
+from langchain_core.tools import tool
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 # --- 1. Load Environment and Core Components ---
 load_dotenv()
@@ -121,7 +122,7 @@ def create_quant_agent_executor():
         MessagesPlaceholder(variable_name="agent_scratchpad")
     ])
     llm = ChatOpenAI(model="gpt-4o", temperature=0.2)
-    agent = create_openai_tools_agent(llm, tools, prompt)
+    agent = create_tool_calling_agent(llm, tools, prompt)
     executor = AgentExecutor(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
     return executor
 
